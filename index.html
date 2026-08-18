@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ilhas e Setores — 9º Ano · 3º Bimestre</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#4A90D9;--pink:#E84393;
+  --txt:#1a1a1a;--txt2:#555;--txt3:#888;
+  --bg:#f4f4f0;--card:#fff;--card2:#f0f0eb;
+  --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+  --info-bg:#e8f0fb;--info-txt:#1a4fa0;
+  --ok-bg:#dcfce7;--ok-txt:#15803d;--ok-border:#22c55e;
+  --err-bg:#fee2e2;--err-txt:#b91c1c;--err-border:#ef4444;
+  --warn-bg:#fef9c3;--warn-txt:#854d0e;--warn-border:#eab308;
+  --r:10px;--r2:14px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --txt:#f0f0f0;--txt2:#aaa;--txt3:#777;
+  --bg:#18181b;--card:#27272a;--card2:#323236;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.22);
+  --info-bg:#1a2f50;--info-txt:#7eb3f5;
+  --ok-bg:#14321e;--ok-txt:#4ade80;
+  --err-bg:#3b1212;--err-txt:#f87171;
+  --warn-bg:#2d2000;--warn-txt:#fbbf24;
+}}
+body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:16px;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+.wrap{max-width:820px;margin:0 auto;padding:1.5rem 1.25rem;flex:1}
+.site-header{background:var(--card);border-bottom:0.5px solid var(--border);padding:1rem 1.25rem;text-align:center}
+.site-header h1{font-size:22px;font-weight:600;color:var(--txt)}
+.site-header p{font-size:14px;color:var(--txt2);margin-top:3px}
+.nav{display:flex;gap:8px;margin-bottom:1.75rem;flex-wrap:wrap;justify-content:center}
+.nav-btn{padding:10px 22px;border:1px solid var(--border2);border-radius:22px;background:transparent;cursor:pointer;font-size:15px;color:var(--txt2);transition:all .2s;font-family:inherit}
+.nav-btn.active{background:var(--info-bg);color:var(--info-txt);border-color:transparent;font-weight:600}
+.nav-btn:hover:not(.active){background:var(--card)}
+.section{display:none}.section.active{display:block}
+h2{font-size:20px;font-weight:600;color:var(--txt);margin-bottom:1.1rem}
+h3{font-size:17px;font-weight:600;color:var(--txt);margin-bottom:.6rem;margin-top:1.4rem}
+p{font-size:15px;color:var(--txt2);line-height:1.7}
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r2);padding:1.5rem;margin-bottom:1.25rem}
+.card-sm{background:var(--card2);border:0.5px solid var(--border);border-radius:var(--r);padding:1.1rem;margin-bottom:1rem}
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:1.1rem 0}
+.cat-box{border-radius:var(--r);padding:14px 12px;border:1px solid var(--border)}
+.cat-icon{font-size:24px;display:block;margin-bottom:6px}
+.cat-name{font-size:13.5px;font-weight:700}
+.cat-desc{font-size:12px;color:var(--txt2);margin-top:4px;line-height:1.5}
+.steps{display:flex;flex-direction:column;gap:12px;margin-top:.9rem}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-n{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.step-txt{font-size:15px;color:var(--txt2);line-height:1.6;padding-top:3px}
+.q-progress{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.q-dot{width:14px;height:14px;border-radius:50%;background:var(--border2);transition:.3s}
+.q-dot.cur{background:var(--blue)}.q-dot.ok{background:var(--ok-border)}.q-dot.err{background:var(--err-border)}
+.q-text{font-size:16px;color:var(--txt);line-height:1.65;margin-bottom:1.1rem;font-weight:500}
+.q-opts{display:grid;gap:9px}
+.q-opt{padding:12px 16px;border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;font-size:15px;color:var(--txt2);background:var(--card);text-align:left;transition:.2s;font-family:inherit;line-height:1.5}
+.q-opt:hover{background:var(--card2);color:var(--txt)}
+.q-opt.ok{background:var(--ok-bg);border-color:var(--ok-border);color:var(--ok-txt)}
+.q-opt.err{background:var(--err-bg);border-color:var(--err-border);color:var(--err-txt)}
+.q-opt.dis{cursor:default;pointer-events:none}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.1rem}
+.btn{padding:10px 20px;border:1px solid var(--border2);border-radius:var(--r);background:transparent;cursor:pointer;font-size:15px;color:var(--txt2);transition:.2s;font-family:inherit}
+.btn:hover{background:var(--card2);color:var(--txt)}
+.btn:disabled{opacity:.38;cursor:default}
+.btn-p{background:var(--info-bg);border-color:transparent;color:var(--info-txt);font-weight:600}
+.btn-p:hover{opacity:.88}
+.q-ctr{font-size:14px;color:var(--txt3)}
+.score-box{text-align:center;padding:3rem 1rem;background:var(--card);border-radius:var(--r2);border:0.5px solid var(--border);display:none}
+.score-n{font-size:56px;font-weight:700;color:var(--txt)}
+.score-s{font-size:15px;color:var(--txt2);margin-top:.5rem}
+.balloon-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:1.25rem;z-index:999}
+.balloon-overlay.show{display:flex}
+.balloon-box{background:var(--card);border-radius:var(--r2);padding:1.75rem 1.5rem;max-width:420px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.25);border-top:5px solid var(--ok-border);animation:balloonPop .25s ease}
+.balloon-overlay.err .balloon-box{border-top-color:var(--err-border)}
+@keyframes balloonPop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.balloon-emoji{font-size:42px;margin-bottom:.5rem}
+.balloon-title{font-size:18px;font-weight:700;color:var(--txt);margin-bottom:.6rem}
+.balloon-msg{font-size:15px;color:var(--txt2);line-height:1.65;margin-bottom:1.4rem}
+.balloon-btn{width:100%;padding:13px;font-size:15px}
+footer{background:var(--card);border-top:0.5px solid var(--border);padding:1.1rem 1.25rem;text-align:center;margin-top:auto}
+footer p{font-size:14px;color:var(--txt2)}
+footer a{color:var(--info-txt);text-decoration:none;font-weight:600}
+footer a:hover{text-decoration:underline}
+/* PRÁTICA — Caça ao Intruso */
+.ci-wrap{max-width:640px;margin:0 auto}
+.ci-instructions{background:var(--info-bg);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;font-size:13.5px;color:var(--info-txt);line-height:1.6;margin-bottom:1rem}
+.ci-hud{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1rem}
+.ci-chip{background:var(--card2);border:1px solid var(--border);color:var(--txt2);font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:20px}
+.ci-chip.stage{background:var(--info-bg);color:var(--info-txt);border-color:transparent}
+.ci-titulo{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r2);padding:1.1rem 1.3rem;margin-bottom:1rem;text-align:center}
+.ci-titulo-label{font-size:11.5px;font-weight:800;color:var(--info-txt);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.4rem}
+.ci-titulo-txt{font-size:18px;color:var(--txt);font-weight:800;line-height:1.4}
+.ci-cards{display:grid;gap:10px;margin-bottom:1rem}
+@media(min-width:560px){.ci-cards{grid-template-columns:1fr 1fr}}
+.ci-card{padding:14px 16px;border:1.5px solid var(--border2);border-radius:var(--r);background:var(--card);color:var(--txt2);font-size:14.5px;cursor:pointer;font-family:inherit;text-align:left;line-height:1.5;transition:.2s;display:flex;align-items:center;gap:9px}
+.ci-card:hover{background:var(--card2);color:var(--txt)}
+.ci-card .ci-ico{font-size:17px;flex-shrink:0}
+.ci-card.flash-ok{background:var(--ok-bg);border-color:var(--ok-border);color:var(--ok-txt);font-weight:600}
+.ci-card.flash-err{background:var(--err-bg);border-color:var(--err-border);color:var(--err-txt)}
+.ci-card.dis{pointer-events:none;opacity:.75}
+.ci-stage-intro{text-align:center;padding:2rem 1.25rem;background:var(--card);border-radius:var(--r2);border:0.5px solid var(--border)}
+.ci-report{text-align:center;padding:1.75rem 1rem;background:var(--card);border-radius:var(--r2);border:0.5px solid var(--border)}
+.score-line{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--txt2);background:var(--card2);border-radius:8px;padding:8px 12px}
+.score-line.total{color:var(--ok-txt);background:var(--ok-bg);font-size:14px}
+.score-line .sv{margin-left:auto;font-weight:800}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+    <h1>🏝️ Ilhas e Setores</h1>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px">
+    <p style="margin:0">Geografia — 9º Ano &nbsp;|&nbsp; 3º Bimestre &nbsp;|&nbsp; Aulas 3 a 4</p>
+    <button id="sfx-btn" onclick="toggleSfx()" title="Ativar/desativar sons"
+      style="background:var(--info-bg);border:1px solid var(--border);cursor:pointer;
+             width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
+             justify-content:center;font-size:14px;color:var(--info-txt);flex-shrink:0;
+             transition:.2s">🔊</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="nav">
+    <button class="nav-btn active" onclick="show('tutorial')">📖 Tutorial</button>
+    <button class="nav-btn" onclick="show('quiz')">🧠 Quiz</button>
+    <button class="nav-btn" onclick="show('pratica')">🏝️ Prática</button>
+  </div>
+
+  <!-- ══════════════════════ TUTORIAL ══════════════════════ -->
+  <div id="tutorial" class="section active">
+    <h2>Oceania física e o uso do solo na Europa</h2>
+
+    <h3>🏝️ Aspectos físicos da Oceania</h3>
+    <div class="card">
+      <p>A Oceania tem clima predominantemente <strong style="color:var(--txt)">tropical</strong>, mas com variações conforme a altitude e a influência das correntes marítimas — equatorial, tropical de monções, subtropical, desértico, semiárido e mediterrâneo. A Austrália concentra os maiores contrastes vegetais do continente, com um interior desértico cercado por faixas mais úmidas no litoral.</p>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-box" style="background:var(--warn-bg);border-color:var(--warn-border)">
+        <span class="cat-icon">🏜️</span>
+        <div class="cat-name" style="color:var(--warn-txt)">Austrália</div>
+        <div class="cat-desc">Planícies extensas e relevo de baixa diversidade; interior desértico e grandes contrastes de vegetação.</div>
+      </div>
+      <div class="cat-box" style="background:var(--card2)">
+        <span class="cat-icon">🌋</span>
+        <div class="cat-name">Melanésia</div>
+        <div class="cat-desc">Montanhas <strong>vulcânicas</strong>, com relevo acidentado (Papua-Nova Guiné, Fiji, Vanuatu).</div>
+      </div>
+      <div class="cat-box" style="background:var(--card2)">
+        <span class="cat-icon">🪸</span>
+        <div class="cat-name">Micronésia</div>
+        <div class="cat-desc">Atóis <strong>coralíneos</strong> — ilhas baixas formadas por corais, não por vulcões.</div>
+      </div>
+      <div class="cat-box" style="background:var(--card2)">
+        <span class="cat-icon">🌺</span>
+        <div class="cat-name">Polinésia</div>
+        <div class="cat-desc">Ilhas de origem <strong>vulcânica</strong>, situadas no Círculo de Fogo do Pacífico.</div>
+      </div>
+    </div>
+    <div class="card-sm" style="border-left:4px solid var(--info-txt)">
+      <strong style="color:var(--txt);font-size:14px">💧 Sistema Murray-Darling:</strong>
+      <span style="font-size:14px;color:var(--txt2)"> principal sistema hidrográfico da Oceania, vital para a irrigação agrícola no interior seco da Austrália.</span>
+    </div>
+
+    <h3>🇪🇺 Uso e ocupação do solo na Europa</h3>
+    <div class="card">
+      <div class="steps">
+        <div class="step"><div class="step-n" style="background:var(--ok-bg);color:var(--ok-txt)">🌾</div><div class="step-txt"><strong style="color:var(--txt)">Setor primário:</strong> o clima e o relevo determinam o uso agrícola — oliveiras e vinhedos no Mediterrâneo, agricultura mecanizada nas grandes planícies e pecuária no norte europeu.</div></div>
+        <div class="step"><div class="step-n" style="background:var(--warn-bg);color:var(--warn-txt)">🏭</div><div class="step-txt"><strong style="color:var(--txt)">Setor secundário:</strong> a indústria se concentra no <strong>Vale do Ruhr</strong> (Alemanha), no <strong>Norte da Itália</strong> e no <strong>Reino Unido</strong>, sempre favorecida pela proximidade de centros urbanos, recursos naturais, portos e rios.</div></div>
+        <div class="step"><div class="step-n" style="background:var(--info-bg);color:var(--info-txt)">🏨</div><div class="step-txt"><strong style="color:var(--txt)">Setor terciário:</strong> turismo histórico, gastronômico, natural, de moda e religioso, além de centros financeiros e tecnológicos.</div></div>
+        <div class="step"><div class="step-n" style="background:#fce7f3;color:#be185d">🏙️</div><div class="step-txt"><strong style="color:var(--txt)">Urbanização:</strong> herdada da Revolução Industrial, é intensa — mais de <strong>70%</strong> da população europeia vive em áreas urbanas.</div></div>
+      </div>
+      <div class="card-sm" style="border-left:4px solid var(--ok-txt);margin-top:1rem">
+        <strong style="color:var(--txt);font-size:14px">🎯 Na Prática:</strong>
+        <span style="font-size:14px;color:var(--txt2)"> em cada rodada você verá um grupo de 4 itens — três realmente pertencem ao tema, e um é o intruso. Encontre o intruso!</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:1.5rem;margin-bottom:.5rem">
+      <button class="btn btn-p" style="font-size:16px;padding:13px 32px" onclick="show('quiz')">Ir para o Quiz →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ QUIZ ══════════════════════ -->
+  <div id="quiz" class="section">
+    <h2>Teste seus conhecimentos</h2>
+    <div class="q-progress" id="qprog"></div>
+    <div id="qcontent"></div>
+    <div class="score-box" id="scorebox">
+      <div class="score-n" id="scoren"></div>
+      <div class="score-s" id="scores"></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:1.75rem">
+        <button class="btn" onclick="restartQ()">Tentar novamente</button>
+        <button class="btn btn-p" onclick="show('pratica')">Ir para a Prática →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ PRÁTICA — CAÇA AO INTRUSO ══════════════════════ -->
+  <div id="pratica" class="section">
+    <h2>🏝️ Caça ao Intruso</h2>
+    <div class="ci-wrap" id="ciWrapOuter"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Prof. Me. Christopher De Andrade Cardoso &nbsp;|&nbsp; <a href="https://inspira.prof/" target="_blank">inspira.prof</a></p>
+</footer>
+
+<div class="balloon-overlay" id="balloonOverlay">
+  <div class="balloon-box">
+    <div class="balloon-emoji" id="balloonEmoji">🎉</div>
+    <div class="balloon-title" id="balloonTitle"></div>
+    <div class="balloon-msg" id="balloonMsg"></div>
+    <button class="btn btn-p balloon-btn" id="balloonBtn" onclick="continueBalloon()">Continuar →</button>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const map={tutorial:'Tutorial',quiz:'Quiz',pratica:'Prática'};
+  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.textContent.includes(map[id]))b.classList.add('active');});
+}
+
+/* ═══════════════════════ SFX ═══════════════════════ */
+let sfxMuted=false;
+let _actx=null;
+function _getActx(){
+  if(!_actx){ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; _actx=new AC(); }
+  if(_actx.state==='suspended') _actx.resume();
+  return _actx;
+}
+function beep(freq,dur,type,vol,delay){
+  if(sfxMuted) return;
+  const ctx=_getActx(); if(!ctx) return;
+  type=type||'square';vol=vol||0.12;delay=delay||0;
+  const t0=ctx.currentTime+delay;
+  const osc=ctx.createOscillator(); const gain=ctx.createGain();
+  osc.type=type; osc.frequency.setValueAtTime(freq,t0);
+  gain.gain.setValueAtTime(0,t0);
+  gain.gain.linearRampToValueAtTime(vol,t0+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t0); osc.stop(t0+dur+0.03);
+}
+function sfxClick(){ beep(500,0.05,'square',0.08); }
+function sfxCorrect(){ beep(880,0.09,'square',0.12); beep(1320,0.12,'square',0.10,0.08); }
+function sfxWrong(){ beep(180,0.18,'sawtooth',0.13); }
+function sfxWin(){ beep(523,0.1,'square',0.12); beep(659,0.1,'square',0.12,0.1); beep(784,0.1,'square',0.12,0.2); beep(1046,0.25,'square',0.14,0.3); }
+function toggleSfx(){
+  sfxMuted=!sfxMuted;
+  const btn=document.getElementById('sfx-btn');
+  if(btn) btn.textContent=sfxMuted?'🔇':'🔊';
+  if(!sfxMuted) beep(700,0.06,'square',0.1);
+}
+
+function shuffleArray(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+/* ═══════════════════════ QUIZ ═══════════════════════ */
+const QRAW=[
+  {
+    visual:'',
+    q:'Qual clima predomina na Oceania?',
+    opts:['O clima polar, com temperaturas muito baixas','O clima tropical, com variações pela altitude','O clima frio continental, de invernos rigorosos','O clima temperado, com quatro estações definidas'],
+    ci:1,
+    fb:'A Oceania tem clima predominantemente tropical, com variações conforme a altitude e a influência das correntes marítimas.'
+  },{
+    visual:'',
+    q:'Que tipo de formação caracteriza as ilhas da Micronésia?',
+    opts:['Atóis coralíneos, ilhas baixas formadas por corais','Montanhas vulcânicas de relevo bastante acidentado','Grandes planícies sedimentares de interior seco','Cadeias montanhosas dobradas de origem tectônica'],
+    ci:0,
+    fb:'A Micronésia é formada por atóis coralíneos — ilhas baixas de origem coralínea, diferentes das ilhas vulcânicas da Melanésia e da Polinésia.'
+  },{
+    visual:'',
+    q:'Qual é a principal característica do relevo da Melanésia?',
+    opts:['Atóis baixos formados por acúmulo de corais','Planícies extensas e de baixa altitude','Montanhas vulcânicas de relevo acidentado','Planaltos áridos cobertos por vegetação rasteira'],
+    ci:2,
+    fb:'A Melanésia (Papua-Nova Guiné, Fiji, Vanuatu) é marcada por montanhas vulcânicas e relevo acidentado.'
+  },{
+    visual:'',
+    q:'Qual é a importância do Sistema Murray-Darling para a Austrália?',
+    opts:['Serve como principal rota de navegação oceânica','Delimita a fronteira com a Nova Zelândia','Abastece as usinas nucleares do país','É vital para a irrigação agrícola no interior seco'],
+    ci:3,
+    fb:'O Sistema Murray-Darling é o principal sistema hidrográfico da Oceania e é vital para a irrigação agrícola no interior seco da Austrália.'
+  },{
+    visual:'',
+    q:'Quais culturas agrícolas são típicas da região mediterrânea da Europa?',
+    opts:['Oliveiras e vinhedos, adaptados ao verão seco','Seringueiras e dendezeiros, de clima equatorial','Arroz irrigado em terraços de encosta','Cacau e café, típicos de clima tropical úmido'],
+    ci:0,
+    fb:'Oliveiras e vinhedos são culturas típicas da região mediterrânea europeia, adaptadas aos verões quentes e secos.'
+  },{
+    visual:'',
+    q:'Qual conjunto representa importantes regiões industriais da Europa?',
+    opts:['Vale do Silício, Detroit e Texas','Xangai, Seul e Tóquio','Vale do Ruhr, Norte da Itália e Reino Unido','Sibéria, Vale de Fergana e Ásia Central'],
+    ci:2,
+    fb:'O Vale do Ruhr (Alemanha), o Norte da Itália e o Reino Unido são importantes regiões industriais europeias.'
+  },{
+    visual:'',
+    q:'Que fatores favorecem a localização das indústrias na Europa?',
+    opts:['Isolamento geográfico e distância dos mercados','Proximidade de centros urbanos, portos e rios','Ausência total de recursos naturais na região','Localização exclusiva em áreas montanhosas altas'],
+    ci:1,
+    fb:'A indústria europeia se localiza perto de centros urbanos, recursos naturais, portos e rios, o que reduz custos de transporte e escoamento.'
+  },{
+    visual:'',
+    q:'Como se caracteriza a urbanização europeia?',
+    opts:['É recente e ainda muito pouco expressiva','A maior parte da população vive em áreas rurais','É intensa, com mais de 70% da população em áreas urbanas','Ocorre apenas nos países do sul do continente'],
+    ci:2,
+    fb:'A urbanização europeia é intensa e herdada da Revolução Industrial, com mais de 70% da população vivendo em áreas urbanas.'
+  }
+];
+
+function shuffleOne(q){
+  const indices=[0,1,2,3];
+  for(let i=indices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [indices[i],indices[j]]=[indices[j],indices[i]]; }
+  const newOpts=indices.map(i=>q.opts[i]);
+  const newCI=indices.indexOf(q.ci);
+  return {...q,opts:newOpts,ci:newCI};
+}
+function shuffleOpts(qraw){
+  const shuffledOrder=shuffleArray(qraw);
+  const out=shuffledOrder.map(shuffleOne);
+  for(let i=2;i<out.length;i++){
+    let tries=0;
+    while(out[i].ci===out[i-1].ci && out[i].ci===out[i-2].ci && tries<25){ out[i]=shuffleOne(shuffledOrder[i]); tries++; }
+  }
+  return out;
+}
+
+let QUIZ=shuffleOpts(QRAW);
+let QS={cur:0,ans:Array(QUIZ.length).fill(null)};
+let quizScore=0;
+let uiLocked=false;
+const COOLDOWN_MS=280;
+
+function renderQ(){
+  const prog=document.getElementById('qprog');
+  prog.innerHTML=QUIZ.map((q,i)=>{
+    let c='q-dot';
+    if(QS.ans[i]!==null) c+=QS.ans[i]===q.ci?' ok':' err';
+    else if(i===QS.cur) c+=' cur';
+    return `<div class="${c}"></div>`;
+  }).join('');
+
+  if(QS.cur>=QUIZ.length){
+    document.getElementById('qcontent').style.display='none';
+    const sc=QS.ans.filter((a,i)=>a===QUIZ[i].ci).length;
+    quizScore=sc;
+    const sb=document.getElementById('scorebox');sb.style.display='block';
+    document.getElementById('scoren').textContent=`${sc}/${QUIZ.length}`;
+    const pct=Math.round(sc/QUIZ.length*100);
+    const msgs=['Continue praticando! Releia o tutorial com atenção e tente novamente.','Bom progresso! Você está quase dominando o conteúdo!','Muito bem! Você entendeu o conteúdo!','Perfeito! Desempenho de excelência!'];
+    document.getElementById('scores').textContent=pct<50?msgs[0]:pct<75?msgs[1]:pct<100?msgs[2]:msgs[3];
+    enviarPontuacaoTotal();
+    return;
+  }
+  document.getElementById('scorebox').style.display='none';
+  document.getElementById('qcontent').style.display='block';
+  const q=QUIZ[QS.cur];
+  const prev=QS.ans[QS.cur];
+  const done=prev!==null;
+
+  document.getElementById('qcontent').innerHTML=`
+    <div class="card">
+      <div class="q-text">Questão ${QS.cur+1}: ${q.q}</div>
+      <div class="q-opts">${q.opts.map((o,i)=>{
+        let c='q-opt';
+        if(done){c+=' dis';if(i===q.ci)c+=' ok';else if(i===prev)c+=' err';}
+        return `<button class="${c}" onclick="ansQ(${i})">${String.fromCharCode(65+i)}) ${o}</button>`;
+      }).join('')}</div>
+    </div>
+    <div class="q-nav">
+      <button class="btn" onclick="prevQ()" ${(QS.cur===0||uiLocked)?'disabled':''}>← Anterior</button>
+      <span class="q-ctr">${QS.cur+1} de ${QUIZ.length}</span>
+    </div>`;
+}
+function ansQ(i){
+  if(uiLocked) return;
+  if(QS.ans[QS.cur]!==null) return;
+  uiLocked=true;
+  QS.ans[QS.cur]=i;
+  renderQ();
+  const correct=i===QUIZ[QS.cur].ci;
+  correct?sfxCorrect():sfxWrong();
+  showBalloon(correct, QUIZ[QS.cur], i);
+}
+function prevQ(){ if(uiLocked) return; if(QS.cur>0){QS.cur--;renderQ();} }
+function restartQ(){
+  QUIZ=shuffleOpts(QRAW);QS={cur:0,ans:Array(QUIZ.length).fill(null)};quizScore=0;uiLocked=false;
+  document.getElementById('balloonOverlay').classList.remove('show','err');
+  renderQ();
+}
+
+const CONGRATS=[
+"Mandou bem! ✅","Isso aí! Resposta certa. 🎯","Show de bola! 🌟","Acertou em cheio! 🔥",
+"Excelente! Continue assim. 💪","Perfeito! Você manda bem nisso. 🏆","Muito bem! 👏","Na mosca! 🎯",
+"Isso mesmo! Você está craque. 🧠","Aí sim! Resposta na régua. 📐","Sensacional! Continue focado. ✨",
+"Boa! Seu raciocínio está afiado. 🔍","Parabéns! Você domina o assunto. 👏","Certeiro! Bora pra próxima. 🚀",
+"Isso! Você está voando. ✈️","Resposta impecável! 💎","Muito bom! Continue nesse ritmo. ⏱️",
+"Você acertou! Segue o jogo. 🎮","Top demais! 🔝","Boa, hein! Vai que é sua. 💥",
+"Correto! Você está mandando bem. 👍","Demais! Isso é conhecimento de verdade. 📚","Uhul! Resposta certeira. 🙌",
+"Isso! Confiança nesse conteúdo. 💪","Excelente raciocínio! 🧩","Acertou! Segue firme. 🏃",
+"Boa demais! Você é fera nisso. 🐆","Certíssimo! 🎉","Isso aí, campeão(ã)! 🏅","Você mandou muito bem! 🙌",
+"Resposta na régua! 📏","Sensacional! Continue assim. 🌈","Boa! Você está evoluindo. 📈",
+"Show! Isso é dedicação. 🎬","Muito bem pensado! 🧠","Isso! Você entendeu direitinho. ✅",
+"Perfeito! Bora continuar. 🔄","Parabéns! Cada acerto conta. ➕","Correto! Seu esforço está valendo. 💯",
+"Aí sim, hein! 👌","Muito bem! Continue estudando assim. 📖","Você foi bem! Confiança total. 🌟",
+"Certo! Próxima pergunta te espera. ➡️","Que resposta! 🔥","Boa! Seu conhecimento tá afiado. ⚔️",
+"Isso mesmo, parabéns! 🎊","Você está mandando muito bem hoje! ☀️","Resposta certeira, adorei! 💚",
+"Excelente! Continue firme no propósito. 🎯","Isso! Vai com tudo pra próxima. 💨",
+"Muito bem! Você está craque nesse tema. 🧠","Boa! Você está no caminho certo. 🛤️",
+"Perfeito! Continue confiante. 🦸","Show! Aprendizado de verdade. 🎓","Certo! Você merece esse ponto. ⭐",
+"Isso aí! Você está brilhando. ✨","Muito bem! Foco total. 🎯","Boa resposta! Continue assim. 🙂",
+"Você acertou de novo! Sequência boa. 🔁","Isso! Cada acerto é uma vitória. 🏆",
+"Correto! Seu estudo está dando resultado. 📊","Muito bem! Você está craque. 🧑‍🎓",
+"Boa! Isso mostra que você entendeu. 💡","Isso aí! Segue o jogo com tudo. 🎮","Excelente resposta! 🌟",
+"Você mandou bem demais! 🙌","Certo! Continue com essa energia. ⚡","Perfeito! Você está evoluindo rápido. 🚀",
+"Boa! Vamos para a próxima. ➡️","Isso! Você está com tudo hoje. 🔥","Muito bem! Confiança em alta. 📈",
+"Resposta certa! Você é fera. 🐯","Show de bola! Continue assim. ⚽","Isso aí! Você está no ponto certo. 📍",
+"Correto! Seu foco está valendo a pena. 🎯","Muito bem! Cada questão te deixa mais forte. 💪",
+"Boa! Isso é aprendizado de verdade. 📚","Você acertou! Parabéns pelo empenho. 🙏",
+"Isso! Continue nesse embalo. 🎶","Excelente! Você está arrasando. 💥","Certo! Bora seguir com tudo. 🏁",
+"Muito bem! Você está cada vez melhor. 🌱","Boa resposta! Confiança lá em cima. 📈",
+"Isso aí! Sua dedicação está valendo. 🕒","Perfeito! Continue assim até o final. 🏁",
+"Você mandou bem! Segue firme. 🧭","Correto! Isso mostra que você estudou. 📖",
+"Muito bem! Você está no seu melhor momento. 🌟","Boa! Cada acerto conta muito. ➕",
+"Isso! Continue confiante assim. 💚","Excelente! Você está mandando muito bem. 🏆",
+"Certo! Vamos pra próxima com essa energia. ⚡","Muito bem! Você está de parabéns. 🎉",
+"Boa resposta! Continue assim, sem parar. 🏃‍♂️","Isso aí! Você está brilhando hoje. ✨",
+"Perfeito! Seu raciocínio está no ponto. 🧠","Você acertou! Continue com essa dedicação. 📌",
+"Correto! Isso é resultado de bom estudo. 🎓","Muito bem! Falta pouco pra terminar com chave de ouro. 🔑",
+"Excelente! Você concluiu essa com maestria. 🏅"
+];
+
+function showBalloon(correct,q,chosenIndex){
+  const overlay=document.getElementById('balloonOverlay');
+  const emoji=document.getElementById('balloonEmoji');
+  const title=document.getElementById('balloonTitle');
+  const msg=document.getElementById('balloonMsg');
+  const btn=document.getElementById('balloonBtn');
+  const isLast=QS.cur===QUIZ.length-1;
+  overlay.classList.toggle('err',!correct);
+  if(correct){
+    emoji.textContent=['🎉','✅','🌟','🔥','🏆'][Math.floor(Math.random()*5)];
+    title.textContent='Resposta correta!';
+    msg.textContent=CONGRATS[Math.floor(Math.random()*CONGRATS.length)];
+  } else {
+    emoji.textContent='💡';
+    title.textContent='Não foi dessa vez';
+    const letra=String.fromCharCode(65+q.ci);
+    msg.textContent=`A alternativa correta era ${letra}) ${q.opts[q.ci]}. ${q.fb}`;
+  }
+  btn.textContent=isLast?'Ver resultado →':'Continuar →';
+  overlay.classList.add('show');
+}
+function continueBalloon(){
+  const overlay=document.getElementById('balloonOverlay');
+  if(!overlay.classList.contains('show')) return;
+  overlay.classList.remove('show');
+  QS.cur++;
+  renderQ();
+  setTimeout(()=>{ uiLocked=false; renderQ(); }, COOLDOWN_MS);
+}
+
+/* ═══════════════════════ PRÁTICA — "CAÇA AO INTRUSO" ═══════════════════════
+   Mecânica de exclusão (odd one out): cada rodada mostra um tema e 4 itens —
+   três realmente pertencem ao tema e um é o intruso. O aluno clica no intruso.
+   Mecânica nova: nas atividades anteriores o aluno sempre classificava um item
+   em uma categoria; aqui ele precisa avaliar um conjunto inteiro e detectar
+   o elemento que não se encaixa. Duas etapas: Oceania física e Europa (uso do solo). */
+const ETAPAS=[
+  {
+    id:'oceania',
+    nome:'Etapa 1 — Oceania física',
+    emoji:'🏝️',
+    intro:'Vamos investigar os aspectos físico-naturais da Oceania. Em cada grupo, três itens pertencem ao tema — encontre o intruso!',
+    rodadas:[
+      {
+        tema:'Climas que ocorrem na Oceania',
+        certos:['Clima tropical de monções','Clima desértico','Clima mediterrâneo'],
+        intruso:'Clima polar de calota',
+        fb:'A Oceania tem climas equatorial, tropical, subtropical, desértico, semiárido e mediterrâneo — mas não clima polar de calota.'
+      },{
+        tema:'Formas de relevo encontradas na Oceania',
+        certos:['Planícies australianas','Montanhas vulcânicas da Melanésia','Atóis coralíneos da Micronésia'],
+        intruso:'Cadeia montanhosa dos Alpes',
+        fb:'Os Alpes ficam na Europa. O relevo da Oceania reúne planícies australianas, montanhas vulcânicas e atóis coralíneos.'
+      },{
+        tema:'Características do território australiano',
+        certos:['Interior desértico','Sistema Murray-Darling','Grandes contrastes de vegetação'],
+        intruso:'Planalto do Tibete',
+        fb:'O Planalto do Tibete fica na Ásia. A Austrália se caracteriza pelo interior desértico, pelo Sistema Murray-Darling e por fortes contrastes vegetais.'
+      },{
+        tema:'Ilhas de origem vulcânica no Pacífico',
+        certos:['Montanhas vulcânicas da Melanésia','Ilhas vulcânicas da Polinésia','Região do Círculo de Fogo do Pacífico'],
+        intruso:'Atóis coralíneos da Micronésia',
+        fb:'Os atóis da Micronésia são de origem coralínea, e não vulcânica — diferente das ilhas da Melanésia e da Polinésia.'
+      },{
+        tema:'Hidrografia e irrigação na Austrália',
+        certos:['Rio Murray','Irrigação agrícola no interior','Rios vitais para as áreas secas'],
+        intruso:'Rio Danúbio',
+        fb:'O Danúbio é um rio europeu. Na Austrália, o Sistema Murray-Darling é o que sustenta a irrigação do interior seco.'
+      }
+    ]
+  },
+  {
+    id:'europa',
+    nome:'Etapa 2 — Uso do solo na Europa',
+    emoji:'🇪🇺',
+    intro:'Agora vamos analisar as atividades econômicas europeias. Mesma regra: encontre o item que não pertence ao grupo!',
+    rodadas:[
+      {
+        tema:'Agricultura mediterrânea na Europa',
+        certos:['Cultivo de oliveiras','Cultivo de vinhedos','Adaptação ao verão quente e seco'],
+        intruso:'Pecuária ovina da Nova Zelândia',
+        fb:'A pecuária ovina é típica da Nova Zelândia e da Austrália. A agricultura mediterrânea europeia se baseia em oliveiras e vinhedos.'
+      },{
+        tema:'Regiões industriais da Europa',
+        certos:['Vale do Ruhr, na Alemanha','Norte da Itália','Reino Unido'],
+        intruso:'Vale do Silício, nos EUA',
+        fb:'O Vale do Silício fica nos Estados Unidos. As grandes regiões industriais europeias são o Vale do Ruhr, o Norte da Itália e o Reino Unido.'
+      },{
+        tema:'Fatores que atraem indústrias na Europa',
+        certos:['Proximidade de portos e ferrovias','Proximidade de rios navegáveis','Proximidade de centros urbanos'],
+        intruso:'Distância máxima dos consumidores',
+        fb:'A indústria busca ficar perto dos consumidores, não longe. Portos, rios e centros urbanos são os fatores que atraem indústrias.'
+      },{
+        tema:'Setor de serviços na Europa',
+        certos:['Turismo histórico','Centros financeiros e tecnológicos','Turismo gastronômico'],
+        intruso:'Agricultura de subsistência',
+        fb:'A agricultura de subsistência é característica das ilhas do Pacífico, não do setor terciário europeu, que reúne turismo e centros financeiros.'
+      },{
+        tema:'Urbanização na Europa',
+        certos:['Herança da Revolução Industrial','Mais de 70% em áreas urbanas','Processo de urbanização intenso'],
+        intruso:'População majoritariamente rural',
+        fb:'A Europa é fortemente urbanizada: mais de 70% da população vive em áreas urbanas, herança da Revolução Industrial.'
+      }
+    ]
+  }
+];
+
+let caca={};
+let practiceScore=0;
+const PTS_POR_ACERTO=25, PTS_POR_ERRO=8;
+
+function totalRodadas(){ return ETAPAS.reduce((s,e)=>s+e.rodadas.length,0); }
+
+function resetCaca(){
+  caca={
+    etapa:0,
+    rodada:0,
+    ordemRodadas: ETAPAS.map(e=>shuffleArray(e.rodadas.map((_,i)=>i))), // ✏️ ordem sorteada
+    cartas:[],
+    acertos:0,
+    erros:0,
+    etapaScores:[],
+    travado:false,
+    telaIntro:true
+  };
+  practiceScore=0;
+  renderIntroEtapa();
+}
+
+function rodadaAtual(){
+  const et=ETAPAS[caca.etapa];
+  return et.rodadas[caca.ordemRodadas[caca.etapa][caca.rodada]];
+}
+
+function renderIntroEtapa(){
+  const et=ETAPAS[caca.etapa];
+  document.getElementById('ciWrapOuter').innerHTML=`
+    <div class="ci-stage-intro">
+      <div style="font-size:44px;margin-bottom:.5rem">${et.emoji}</div>
+      <h3 style="margin-top:0">${et.nome}</h3>
+      <p style="max-width:420px;margin:.5rem auto 1.5rem">${et.intro}</p>
+      <button class="btn btn-p" style="font-size:16px;padding:12px 28px" onclick="iniciarEtapa()">Começar etapa →</button>
+    </div>`;
+}
+
+function iniciarEtapa(){
+  sfxClick();
+  caca.telaIntro=false;
+  caca.rodada=0;
+  prepararCartas();
+  montarPalcoCaca();
+  renderCaca();
+}
+
+function prepararCartas(){
+  const r=rodadaAtual();
+  const lista=r.certos.map(t=>({texto:t, intruso:false}));
+  lista.push({texto:r.intruso, intruso:true});
+  caca.cartas=shuffleArray(lista); // ✏️ posição do intruso sempre sorteada
+  caca.travado=true; // mantém travado durante a transição para a rodada nova
+  caca.flashIdx=null;
+  setTimeout(()=>{ caca.travado=false; }, 280); // só libera com a rodada já estável na tela
+}
+
+function montarPalcoCaca(){
+  document.getElementById('ciWrapOuter').innerHTML=`
+    <div class="ci-instructions">👉 Três itens pertencem ao tema e <strong>um é o intruso</strong>. Clique no intruso!</div>
+    <div id="ciHud" class="ci-hud"></div>
+    <div id="ciTitulo"></div>
+    <div id="ciCards" class="ci-cards"></div>`;
+}
+
+function renderCaca(){
+  const et=ETAPAS[caca.etapa];
+  const r=rodadaAtual();
+  document.getElementById('ciHud').innerHTML=`
+    <div class="ci-chip stage">${et.emoji} Etapa ${caca.etapa+1}/${ETAPAS.length}</div>
+    <div class="ci-chip">Rodada ${caca.rodada+1}/${et.rodadas.length}</div>
+    <div class="ci-chip">Acertos: ${caca.acertos}</div>
+    <div class="ci-chip">Erros: ${caca.erros}</div>`;
+  document.getElementById('ciTitulo').innerHTML=`
+    <div class="ci-titulo">
+      <div class="ci-titulo-label">🔎 Qual não pertence ao grupo?</div>
+      <div class="ci-titulo-txt">${r.tema}</div>
+    </div>`;
+  document.getElementById('ciCards').innerHTML=caca.cartas.map((c,i)=>{
+    let cls='ci-card';
+    if(caca.flashIdx===i) cls+=c.intruso?' flash-ok':' flash-err';
+    if(caca.travado) cls+=' dis';
+    const ico=(caca.flashIdx===i)?(c.intruso?'✅':'❌'):'▫️';
+    return `<button class="${cls}" onclick="escolherCarta(${i})"><span class="ci-ico">${ico}</span><span>${c.texto}</span></button>`;
+  }).join('');
+}
+
+function escolherCarta(i){
+  if(caca.travado) return;
+  const c=caca.cartas[i];
+  caca.flashIdx=i;
+  if(c.intruso){
+    caca.travado=true;
+    caca.acertos++;
+    sfxCorrect();
+    renderCaca();
+    setTimeout(()=>avancarRodada(), 620);
+  } else {
+    caca.erros++;
+    sfxWrong();
+    renderCaca();
+    setTimeout(()=>{ caca.flashIdx=null; renderCaca(); }, 480);
+  }
+}
+
+function avancarRodada(){
+  const et=ETAPAS[caca.etapa];
+  if(caca.rodada < et.rodadas.length-1){
+    caca.rodada++;
+    prepararCartas();
+    renderCaca();
+  } else {
+    finalizarEtapa();
+  }
+}
+
+function finalizarEtapa(){
+  // ✏️ REGRA DE OURO: a pontuação da etapa é calculada ANTES de renderizar qualquer tela final
+  caca.etapaScores.push({ etapa: ETAPAS[caca.etapa].nome, rodadas: ETAPAS[caca.etapa].rodadas.length });
+  if(caca.etapa < ETAPAS.length-1){
+    caca.etapa++;
+    caca.telaIntro=true;
+    sfxWin();
+    renderIntroEtapa();
+  } else {
+    finalizarPratica();
+  }
+}
+
+function finalizarPratica(){
+  const base=PTS_POR_ACERTO*caca.acertos;
+  const desconto=PTS_POR_ERRO*caca.erros;
+  practiceScore=Math.max(0, base-desconto);
+  sfxWin();
+  renderFinal(base, desconto);
+  enviarPontuacaoTotal();
+}
+
+function renderFinal(base, desconto){
+  const elogio = caca.erros===0
+    ? 'Perfeito! Você encontrou todos os intrusos sem errar nenhuma vez. 🌟'
+    : (caca.erros<=4 ? 'Muito bom! Você sabe distinguir bem o que pertence a cada região.' : 'Investigação concluída! Releia o tutorial para fixar as diferenças entre as regiões.');
+  document.getElementById('ciWrapOuter').innerHTML=`
+    <div class="ci-report">
+      <h3>🏆 Todos os intrusos encontrados!</h3>
+      <p>${elogio}<br>Você resolveu <strong>${totalRodadas()}</strong> rodadas em <strong>${ETAPAS.length}</strong> etapas, com <strong>${caca.erros}</strong> ${caca.erros===1?'erro':'erros'}.</p>
+      <div style="max-width:340px;margin:1rem auto;display:flex;flex-direction:column;gap:6px">
+        <div class="score-line"><div>Acertos (${caca.acertos} × ${PTS_POR_ACERTO} pts)</div><div class="sv">${base} pts</div></div>
+        <div class="score-line"><div>Descontos (${caca.erros} × ${PTS_POR_ERRO} pts)</div><div class="sv">− ${desconto} pts</div></div>
+        <div class="score-line total"><div><strong>Total da Prática</strong></div><div class="sv">${practiceScore} pts</div></div>
+      </div>
+      <button class="btn btn-p" onclick="restartPractice()">🔁 Jogar novamente</button>
+    </div>`;
+}
+
+function restartPractice(){
+  sfxClick();
+  resetCaca();
+}
+
+/* ═══════════════════════ PONTUAÇÃO COMBINADA → FARME ═══════════════════════ */
+function enviarPontuacaoTotal(){
+  const total=(quizScore*100)+practiceScore;
+  if(window.enviarScoreFarme){
+    window.enviarScoreFarme(total, {
+      corrects: quizScore,
+      totals: QRAW.length
+    });
+  }
+}
+
+renderQ();
+resetCaca();
+</script>
+
+<script>
+/* ===== KIT FARME AURA — Integração com iframe ===== */
+(function(){
+  const dentroDoFarme = window.parent && window.parent !== window;
+
+  window.enviarScoreFarme = function(pontos, extra){
+    extra = extra || {};
+    const payload = {
+      tipo: 'FARME_ATIVIDADE_SCORE',
+      pontos: Math.max(0, Math.round(pontos || 0)),
+      corrects: extra.corrects || null,
+      totals: extra.totals || null,
+      atividade: document.title || 'Atividade',
+      timestamp: Date.now()
+    };
+    if(dentroDoFarme){
+      window.parent.postMessage(payload, '*');
+    }
+  };
+
+  if(dentroDoFarme){
+    window.parent.postMessage({ tipo: 'FARME_ATIVIDADE_PRONTA', atividade: document.title }, '*');
+  }
+})();
+/* ===== FIM DO KIT FARME ===== */
+</script>
+</body>
+</html>
